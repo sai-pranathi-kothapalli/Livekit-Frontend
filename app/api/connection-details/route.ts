@@ -64,7 +64,7 @@ export async function POST(req: Request) {
         const booking = await getBooking(token);
         if (booking?.resume_text) {
           resumeText = booking.resume_text;
-          console.log(`[connection-details] Found resume text for token ${token} (${resumeText.length} chars)`);
+          console.log(`[connection-details] Found resume text for token ${token} (${resumeText?.length || 0} chars)`);
         }
       } catch (err) {
         console.warn('[connection-details] Failed to fetch booking for resume:', err);
