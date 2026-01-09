@@ -43,17 +43,22 @@ export async function POST(req: Request) {
     const body = (await req.json()) as SchedulePayload;
     const { name, email, phone, datetime, resumeUrl, resumeText } = body;
 
-    console.log('[schedule-interview] Received request:', { 
-      name, 
-      email, 
-      phone, 
+    console.log('[schedule-interview] Received request:', {
+      name,
+      email,
+      phone,
       datetime,
       hasResume: !!resumeText,
       resumeTextLength: resumeText?.length ?? 0,
     });
 
     if (!name || !email || !phone || !datetime) {
-      console.error('[schedule-interview] Missing fields:', { name: !!name, email: !!email, phone: !!phone, datetime: !!datetime });
+      console.error('[schedule-interview] Missing fields:', {
+        name: !!name,
+        email: !!email,
+        phone: !!phone,
+        datetime: !!datetime,
+      });
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -94,7 +99,7 @@ export async function POST(req: Request) {
 
     // Send email via SMTP
     const transporter = getSmtpTransporter();
-    const fromName = process.env.SMTP_FROM_NAME || "Sreedhar's CCE Team";
+    const fromName = process.env.SMTP_FROM_NAME || 'Codegnan Team';
     const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
 
     if (!transporter || !fromEmail) {
@@ -190,7 +195,9 @@ export async function POST(req: Request) {
         `,
       });
 
-      console.log(`[schedule-interview] ✅ Email sent successfully to ${email} (Message ID: ${info.messageId})`);
+      console.log(
+        `[schedule-interview] ✅ Email sent successfully to ${email} (Message ID: ${info.messageId})`
+      );
       return NextResponse.json({ ok: true, interviewUrl, emailSent: true });
     } catch (emailErr) {
       console.error('[schedule-interview] SMTP email error:', emailErr);
@@ -214,5 +221,3 @@ export async function POST(req: Request) {
     );
   }
 }
-
-

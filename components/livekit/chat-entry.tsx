@@ -34,11 +34,12 @@ export const ChatEntry = ({
 }: ChatEntryProps) => {
   const time = new Date(timestamp);
   const title = time.toLocaleTimeString(locale, { timeStyle: 'full' });
-  
+
   // For streaming, show partial text (but always show at least something)
-  const displayText = isStreaming && displayedLength !== undefined && displayedLength > 0
-    ? message.slice(0, displayedLength)
-    : message;
+  const displayText =
+    isStreaming && displayedLength !== undefined && displayedLength > 0
+      ? message.slice(0, displayedLength)
+      : message;
 
   return (
     <li
@@ -67,7 +68,7 @@ export const ChatEntry = ({
       >
         {displayText}
         {isStreaming && displayedLength !== undefined && displayedLength < message.length && (
-          <span className="inline-block w-2 h-4 ml-1 bg-current animate-pulse" />
+          <span className="ml-1 inline-block h-4 w-2 animate-pulse bg-current" />
         )}
       </span>
     </li>

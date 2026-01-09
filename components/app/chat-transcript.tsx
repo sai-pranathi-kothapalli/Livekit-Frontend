@@ -68,7 +68,7 @@ export function ChatTranscript({
             const messageOrigin = from?.isLocal ? 'local' : 'remote';
             const hasBeenEdited =
               receivedMessage.type === 'chatMessage' && !!receivedMessage.editTimestamp;
-            
+
             // Extract streaming props if they exist
             const isStreaming = (receivedMessage as any).isStreaming ?? false;
             const displayedLength = (receivedMessage as any).displayedLength;

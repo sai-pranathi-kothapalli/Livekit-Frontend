@@ -47,11 +47,11 @@ export default function ApplyPage() {
   const handleNameChange = (value: string) => {
     // Allow only letters, spaces, and common name characters (hyphens, apostrophes)
     const cleaned = value.replace(/[^a-zA-Z\s'-]/g, '');
-    setForm(f => ({ ...f, name: cleaned }));
+    setForm((f) => ({ ...f, name: cleaned }));
     if (cleaned && !/^[a-zA-Z\s'-]+$/.test(cleaned)) {
-      setValidationErrors(e => ({ ...e, name: 'Name can only contain letters and spaces' }));
+      setValidationErrors((e) => ({ ...e, name: 'Name can only contain letters and spaces' }));
     } else {
-      setValidationErrors(e => {
+      setValidationErrors((e) => {
         const { name, ...rest } = e;
         return rest;
       });
@@ -64,12 +64,12 @@ export default function ApplyPage() {
     const digitsOnly = value.replace(/\D/g, '');
     // Limit to 10 digits
     const limited = digitsOnly.slice(0, 10);
-    setForm(f => ({ ...f, phone: limited }));
-    
+    setForm((f) => ({ ...f, phone: limited }));
+
     if (limited && limited.length !== 10) {
-      setValidationErrors(e => ({ ...e, phone: 'Phone number must be exactly 10 digits' }));
+      setValidationErrors((e) => ({ ...e, phone: 'Phone number must be exactly 10 digits' }));
     } else {
-      setValidationErrors(e => {
+      setValidationErrors((e) => {
         const { phone, ...rest } = e;
         return rest;
       });
@@ -79,28 +79,31 @@ export default function ApplyPage() {
   // Validate date/time is in the future
   const validateDateTime = () => {
     if (!form.date) {
-      setValidationErrors(e => ({ ...e, datetime: 'Please select a date and time' }));
+      setValidationErrors((e) => ({ ...e, datetime: 'Please select a date and time' }));
       return false;
     }
 
     const datetime = getDateTimeString();
     if (!datetime) {
-      setValidationErrors(e => ({ ...e, datetime: 'Please select a date and time' }));
+      setValidationErrors((e) => ({ ...e, datetime: 'Please select a date and time' }));
       return false;
     }
 
     const selectedDateTime = new Date(datetime);
     const now = new Date();
-    
+
     // Add 1 minute buffer to ensure we're truly in the future
     const buffer = new Date(now.getTime() + 60000); // 1 minute from now
 
     if (selectedDateTime <= buffer) {
-      setValidationErrors(e => ({ ...e, datetime: 'Please select a date and time at least 1 minute in the future' }));
+      setValidationErrors((e) => ({
+        ...e,
+        datetime: 'Please select a date and time at least 1 minute in the future',
+      }));
       return false;
     }
 
-    setValidationErrors(e => {
+    setValidationErrors((e) => {
       const { datetime, ...rest } = e;
       return rest;
     });
@@ -110,7 +113,7 @@ export default function ApplyPage() {
   // Convert form fields to datetime string for API
   function getDateTimeString(): string {
     if (!form.date) return '';
-    
+
     // Convert 12-hour to 24-hour format
     let hour24 = parseInt(form.hour, 10);
     if (form.ampm === 'PM' && hour24 !== 12) {
@@ -118,27 +121,27 @@ export default function ApplyPage() {
     } else if (form.ampm === 'AM' && hour24 === 12) {
       hour24 = 0;
     }
-    
+
     const hour24Str = String(hour24).padStart(2, '0');
     const minuteStr = form.minute.padStart(2, '0');
-    
+
     // Create a Date object from local date/time (this interprets it in user's local timezone)
     const localDate = new Date(`${form.date}T${hour24Str}:${minuteStr}`);
-    
+
     // Get timezone offset in minutes and convert to hours:minutes format
     const offsetMinutes = localDate.getTimezoneOffset();
     const offsetHours = Math.floor(Math.abs(offsetMinutes) / 60);
     const offsetMins = Math.abs(offsetMinutes) % 60;
     const offsetSign = offsetMinutes <= 0 ? '+' : '-';
     const offsetStr = `${offsetSign}${String(offsetHours).padStart(2, '0')}:${String(offsetMins).padStart(2, '0')}`;
-    
+
     // Format as YYYY-MM-DDTHH:mm:ss+HH:mm (with timezone offset)
     const year = localDate.getFullYear();
     const month = String(localDate.getMonth() + 1).padStart(2, '0');
     const day = String(localDate.getDate()).padStart(2, '0');
     const hours = String(localDate.getHours()).padStart(2, '0');
     const minutes = String(localDate.getMinutes()).padStart(2, '0');
-    
+
     return `${year}-${month}-${day}T${hours}:${minutes}:00${offsetStr}`;
   }
 
@@ -191,11 +194,11 @@ export default function ApplyPage() {
     try {
       // First, upload application and extract text
       const { uploadApplication, scheduleInterview } = await import('@/lib/api');
-      
+
       if (!form.resume) {
         throw new Error('Application file is required');
       }
-      
+
       const uploadData = await uploadApplication(form.resume);
 
       // Then, schedule interview with resume data
@@ -217,11 +220,11 @@ export default function ApplyPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-12 text-foreground">
-      <div className="w-full max-w-md space-y-6 rounded-lg border border-border bg-card p-6 shadow-sm">
+    <main className="bg-background text-foreground flex min-h-screen items-center justify-center px-4 py-12">
+      <div className="border-border bg-card w-full max-w-md space-y-6 rounded-lg border p-6 shadow-sm">
         <header className="space-y-1">
           <h1 className="text-2xl font-semibold tracking-tight">Schedule your interview</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             Share your details and choose a convenient date and time. You&apos;ll receive a unique
             interview link by email.
           </p>
@@ -232,9 +235,9 @@ export default function ApplyPage() {
             <label className="text-sm font-medium">Full name</label>
             <input
               type="text"
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none ring-0 focus-visible:border-blue-500"
+              className="border-input bg-background w-full rounded-md border px-3 py-2 text-sm ring-0 outline-none focus-visible:border-blue-500"
               value={form.name}
-              onChange={e => handleNameChange(e.target.value)}
+              onChange={(e) => handleNameChange(e.target.value)}
               placeholder="Enter your full name"
               pattern="[a-zA-Z\s'-]+"
               title="Name can only contain letters and spaces"
@@ -249,9 +252,9 @@ export default function ApplyPage() {
             <label className="text-sm font-medium">Email address</label>
             <input
               type="email"
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none ring-0 focus-visible:border-blue-500"
+              className="border-input bg-background w-full rounded-md border px-3 py-2 text-sm ring-0 outline-none focus-visible:border-blue-500"
               value={form.email}
-              onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+              onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
               required
             />
           </div>
@@ -260,9 +263,9 @@ export default function ApplyPage() {
             <label className="text-sm font-medium">Phone number</label>
             <input
               type="tel"
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none ring-0 focus-visible:border-blue-500"
+              className="border-input bg-background w-full rounded-md border px-3 py-2 text-sm ring-0 outline-none focus-visible:border-blue-500"
               value={form.phone}
-              onChange={e => handlePhoneChange(e.target.value)}
+              onChange={(e) => handlePhoneChange(e.target.value)}
               placeholder="10 digit phone number"
               pattern="[0-9]{10}"
               title="Phone number must be exactly 10 digits"
@@ -273,9 +276,7 @@ export default function ApplyPage() {
               <p className="text-xs text-red-600">{validationErrors.phone}</p>
             )}
             {form.phone && form.phone.length < 10 && (
-              <p className="text-xs text-muted-foreground">
-                {form.phone.length}/10 digits
-              </p>
+              <p className="text-muted-foreground text-xs">{form.phone.length}/10 digits</p>
             )}
           </div>
 
@@ -284,17 +285,17 @@ export default function ApplyPage() {
             <input
               type="file"
               accept=".pdf,.doc,.docx"
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none ring-0 focus-visible:border-blue-500 file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-              onChange={e => {
+              className="border-input bg-background w-full rounded-md border px-3 py-2 text-sm ring-0 outline-none file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-3 file:py-1 file:text-sm file:font-medium file:text-blue-700 hover:file:bg-blue-100 focus-visible:border-blue-500"
+              onChange={(e) => {
                 const file = e.target.files?.[0];
                 if (file) {
                   // Validate file size (max 5MB)
                   if (file.size > 5 * 1024 * 1024) {
-                    setValidationErrors(e => ({
+                    setValidationErrors((e) => ({
                       ...e,
                       resume: 'Application file must be less than 5MB',
                     }));
-                    setForm(f => ({ ...f, resume: null }));
+                    setForm((f) => ({ ...f, resume: null }));
                     return;
                   }
                   // Validate file type
@@ -304,15 +305,15 @@ export default function ApplyPage() {
                     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                   ];
                   if (!validTypes.includes(file.type)) {
-                    setValidationErrors(e => ({
+                    setValidationErrors((e) => ({
                       ...e,
                       resume: 'Please upload a PDF or DOC/DOCX file',
                     }));
-                    setForm(f => ({ ...f, resume: null }));
+                    setForm((f) => ({ ...f, resume: null }));
                     return;
                   }
-                  setForm(f => ({ ...f, resume: file }));
-                  setValidationErrors(e => {
+                  setForm((f) => ({ ...f, resume: file }));
+                  setValidationErrors((e) => {
                     const { resume, ...rest } = e;
                     return rest;
                   });
@@ -323,7 +324,7 @@ export default function ApplyPage() {
             {validationErrors.resume && (
               <p className="text-xs text-red-600">{validationErrors.resume}</p>
             )}
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               Accepted formats: PDF, DOC, DOCX (Max 5MB)
             </p>
             {form.resume && (
@@ -335,16 +336,16 @@ export default function ApplyPage() {
 
           <div className="space-y-3">
             <label className="text-sm font-medium">Preferred date &amp; time</label>
-            
+
             {/* Date picker */}
             <div className="space-y-1">
-              <label className="text-xs text-muted-foreground">Date</label>
+              <label className="text-muted-foreground text-xs">Date</label>
               <input
                 type="date"
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none ring-0 focus-visible:border-blue-500"
+                className="border-input bg-background w-full rounded-md border px-3 py-2 text-sm ring-0 outline-none focus-visible:border-blue-500"
                 value={form.date}
-                onChange={e => {
-                  setForm(f => ({ ...f, date: e.target.value }));
+                onChange={(e) => {
+                  setForm((f) => ({ ...f, date: e.target.value }));
                   // Validate after date change
                   setTimeout(validateDateTime, 100);
                 }}
@@ -356,17 +357,17 @@ export default function ApplyPage() {
             {/* Time dropdowns */}
             <div className="grid grid-cols-3 gap-2">
               <div className="space-y-1">
-                <label className="text-xs text-muted-foreground">Hour</label>
+                <label className="text-muted-foreground text-xs">Hour</label>
                 <select
-                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none ring-0 focus-visible:border-blue-500"
+                  className="border-input bg-background w-full rounded-md border px-3 py-2 text-sm ring-0 outline-none focus-visible:border-blue-500"
                   value={form.hour}
-                  onChange={e => {
-                    setForm(f => ({ ...f, hour: e.target.value }));
+                  onChange={(e) => {
+                    setForm((f) => ({ ...f, hour: e.target.value }));
                     setTimeout(validateDateTime, 100);
                   }}
                   required
                 >
-                  {hours.map(h => (
+                  {hours.map((h) => (
                     <option key={h} value={h}>
                       {parseInt(h, 10)}
                     </option>
@@ -375,17 +376,17 @@ export default function ApplyPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs text-muted-foreground">Minute</label>
+                <label className="text-muted-foreground text-xs">Minute</label>
                 <select
-                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none ring-0 focus-visible:border-blue-500"
+                  className="border-input bg-background w-full rounded-md border px-3 py-2 text-sm ring-0 outline-none focus-visible:border-blue-500"
                   value={form.minute}
-                  onChange={e => {
-                    setForm(f => ({ ...f, minute: e.target.value }));
+                  onChange={(e) => {
+                    setForm((f) => ({ ...f, minute: e.target.value }));
                     setTimeout(validateDateTime, 100);
                   }}
                   required
                 >
-                  {minutes.map(m => (
+                  {minutes.map((m) => (
                     <option key={m} value={m}>
                       {m}
                     </option>
@@ -394,12 +395,12 @@ export default function ApplyPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs text-muted-foreground">AM/PM</label>
+                <label className="text-muted-foreground text-xs">AM/PM</label>
                 <select
-                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none ring-0 focus-visible:border-blue-500"
+                  className="border-input bg-background w-full rounded-md border px-3 py-2 text-sm ring-0 outline-none focus-visible:border-blue-500"
                   value={form.ampm}
-                  onChange={e => {
-                    setForm(f => ({ ...f, ampm: e.target.value as 'AM' | 'PM' }));
+                  onChange={(e) => {
+                    setForm((f) => ({ ...f, ampm: e.target.value as 'AM' | 'PM' }));
                     setTimeout(validateDateTime, 100);
                   }}
                   required
@@ -433,7 +434,7 @@ export default function ApplyPage() {
                   href={interviewUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block break-all rounded bg-green-100 px-3 py-2 font-mono text-xs text-green-900 underline hover:bg-green-200 dark:bg-green-900 dark:text-green-100 dark:hover:bg-green-800"
+                  className="block rounded bg-green-100 px-3 py-2 font-mono text-xs break-all text-green-900 underline hover:bg-green-200 dark:bg-green-900 dark:text-green-100 dark:hover:bg-green-800"
                 >
                   {interviewUrl}
                 </a>
@@ -453,5 +454,3 @@ export default function ApplyPage() {
     </main>
   );
 }
-
-

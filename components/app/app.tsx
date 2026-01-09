@@ -34,7 +34,7 @@ export function App({ appConfig, interviewToken }: AppProps) {
     if (typeof process.env.NEXT_PUBLIC_CONN_DETAILS_ENDPOINT === 'string') {
       return getSandboxTokenSource(appConfig);
     }
-    
+
     // Create custom token source that includes interview token
     if (interviewToken) {
       return TokenSource.custom(async () => {
@@ -51,7 +51,7 @@ export function App({ appConfig, interviewToken }: AppProps) {
         return await res.json();
       });
     }
-    
+
     return TokenSource.endpoint('/api/connection-details');
   }, [appConfig, interviewToken]);
 

@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { AccessToken, type AccessTokenOptions, type VideoGrant } from 'livekit-server-sdk';
 import { RoomConfiguration } from '@livekit/protocol';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
 async function getBooking(token: string) {
   try {
@@ -64,7 +65,9 @@ export async function POST(req: Request) {
         const booking = await getBooking(token);
         if (booking?.resume_text) {
           resumeText = booking.resume_text;
-          console.log(`[connection-details] Found resume text for token ${token} (${resumeText?.length || 0} chars)`);
+          console.log(
+            `[connection-details] Found resume text for token ${token} (${resumeText?.length || 0} chars)`
+          );
         }
       } catch (err) {
         console.warn('[connection-details] Failed to fetch booking for resume:', err);

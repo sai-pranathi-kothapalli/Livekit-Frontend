@@ -1,10 +1,11 @@
 /**
  * API Client
- * 
+ *
  * Centralized API client for calling the Python backend.
  */
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
 export interface UploadApplicationResponse {
   resumeUrl: string;
@@ -62,7 +63,9 @@ export async function uploadApplication(file: File): Promise<UploadApplicationRe
 /**
  * Schedule an interview
  */
-export async function scheduleInterview(data: ScheduleInterviewRequest): Promise<ScheduleInterviewResponse> {
+export async function scheduleInterview(
+  data: ScheduleInterviewRequest
+): Promise<ScheduleInterviewResponse> {
   const response = await fetch(`${API_BASE_URL}/api/schedule-interview`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -94,4 +97,3 @@ export async function getBooking(token: string): Promise<BookingResponse | null>
 
   return await response.json();
 }
-

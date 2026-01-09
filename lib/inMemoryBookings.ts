@@ -13,11 +13,11 @@ type Booking = {
   resume_url?: string | null;
 };
 
-export async function createBooking(
-  data: Omit<Booking, 'token' | 'created_at'>
-): Promise<string> {
+export async function createBooking(data: Omit<Booking, 'token' | 'created_at'>): Promise<string> {
   if (!supabaseAdmin) {
-    throw new Error('Supabase is not configured. Please set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env.local');
+    throw new Error(
+      'Supabase is not configured. Please set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env.local'
+    );
   }
 
   const token = crypto.randomBytes(16).toString('hex');
@@ -96,7 +96,7 @@ export async function getAllBookings(): Promise<Booking[]> {
   }
 
   return (
-    data?.map(booking => ({
+    data?.map((booking) => ({
       token: booking.token,
       name: booking.name,
       email: booking.email,
@@ -108,4 +108,3 @@ export async function getAllBookings(): Promise<Booking[]> {
     })) ?? []
   );
 }
-

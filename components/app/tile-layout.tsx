@@ -84,9 +84,12 @@ export function TileLayout({ chatOpen }: TileLayoutProps) {
 
   // Search for any remote video track (Tavus usually shows up here)
   const remoteVideoTracks = useTracks([Track.Source.Camera], { onlySubscribed: true });
-  
+
   // Debug log to see who else is in the room
-  console.log('Remote participants:', remoteVideoTracks.map(t => t.participant.identity));
+  console.log(
+    'Remote participants:',
+    remoteVideoTracks.map((t) => t.participant.identity)
+  );
 
   const tavusTrack = remoteVideoTracks.find(
     (t) => t.participant.identity !== 'local' && t.participant.identity !== ''
