@@ -29,9 +29,24 @@ export default async function InterviewPage({ params }: InterviewPageProps) {
   // Get booking from backend API
   let booking;
   try {
+    // Log for debugging (will appear in Vercel logs)
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+    console.log(`[interview] Fetching booking for token: ${token}`);
+    console.log(`[interview] API URL: ${apiUrl}`);
+    
     booking = await getBooking(token);
+    
+    if (booking) {
+      console.log(`[interview] Booking found: ${booking.email}`);
+    } else {
+      console.log(`[interview] Booking not found (null returned)`);
+    }
   } catch (error) {
     console.error(`[interview] Error fetching booking for token ${token}:`, error);
+    console.error(`[interview] Error details:`, {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
     // In production, show a user-friendly error instead of 404
     return (
       <main className="flex min-h-screen items-center justify-center px-4">
@@ -40,12 +55,16 @@ export default async function InterviewPage({ params }: InterviewPageProps) {
           <p className="text-muted-foreground text-sm">
             There was an error connecting to the server. Please try again later.
           </p>
+          <p className="text-muted-foreground text-xs mt-2">
+            Token: {token}
+          </p>
         </div>
       </main>
     );
   }
 
   if (!booking) {
+    console.log(`[interview] Booking is null, returning notFound()`);
     return notFound();
   }
 

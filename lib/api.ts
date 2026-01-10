@@ -84,16 +84,40 @@ export async function scheduleInterview(
  * Get booking by token
  */
 export async function getBooking(token: string): Promise<BookingResponse | null> {
-  const response = await fetch(`${API_BASE_URL}/api/booking/${token}`);
+  const url = `${API_BASE_URL}/api/booking/${token}`;
+  
+  // Add timeout and better error handling
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+  
+  try {
+    const response = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-  if (response.status === 404) {
-    return null;
+    clearTimeout(timeoutId);
+
+    if (response.status === 404) {
+      return null;
+    }
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ detail: `Failed to fetch booking: ${response.status} ${response.statusText}` }));
+      throw new Error(error.detail || error.error || `Failed to fetch booking: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    clearTimeout(timeoutId);
+    
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error('Request timeout: Backend took too long to respond');
+    }
+    
+    // Re-throw to be handled by caller
+    throw error;
   }
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ detail: 'Failed to fetch booking' }));
-    throw new Error(error.detail || error.error || 'Failed to fetch booking');
-  }
-
-  return await response.json();
 }
