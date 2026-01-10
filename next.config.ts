@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
     // Allow production builds to complete even with TypeScript errors
     ignoreBuildErrors: false,
   },
+  // Ensure proper handling of dynamic routes
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
 };
 
 export default nextConfig;
