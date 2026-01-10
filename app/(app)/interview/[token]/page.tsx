@@ -6,6 +6,10 @@ import { getAppConfig } from '@/lib/utils';
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
+
 interface InterviewPageProps {
   params: Promise<{
     token: string;
