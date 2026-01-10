@@ -11,6 +11,12 @@ const nextConfig: NextConfig = {
     // Allow production builds to complete even with TypeScript errors
     ignoreBuildErrors: false,
   },
+  // Ensure we're using App Router, not static export
+  output: undefined, // Explicitly not setting output: 'export'
+  // Ensure dynamic routes work
+  experimental: {
+    // This ensures dynamic routes are server-rendered
+  },
 };
 
 export default nextConfig;

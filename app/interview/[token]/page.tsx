@@ -4,12 +4,11 @@ import { App } from '@/components/app/app';
 import { getBooking } from '@/lib/api';
 import { getAppConfig } from '@/lib/utils';
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
-
-// Force dynamic rendering for this route
+// Force dynamic rendering for this route - CRITICAL for Vercel
 export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
 export const runtime = 'nodejs';
+export const revalidate = 0;
 
 interface InterviewPageProps {
   params: Promise<{
