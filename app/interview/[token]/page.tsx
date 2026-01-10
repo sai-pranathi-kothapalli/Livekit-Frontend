@@ -8,9 +8,7 @@ const API_BASE_URL =
 
 // Force dynamic rendering for this route
 export const dynamic = 'force-dynamic';
-export const dynamicParams = true;
 export const runtime = 'nodejs';
-export const revalidate = 0;
 
 interface InterviewPageProps {
   params: Promise<{
