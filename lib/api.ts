@@ -105,11 +105,9 @@ export async function getBooking(token: string): Promise<BookingResponse | null>
     }
 
     if (!response.ok) {
-      const error = await response
-        .json()
-        .catch(() => ({
-          detail: `Failed to fetch booking: ${response.status} ${response.statusText}`,
-        }));
+      const error = await response.json().catch(() => ({
+        detail: `Failed to fetch booking: ${response.status} ${response.statusText}`,
+      }));
       throw new Error(error.detail || error.error || `Failed to fetch booking: ${response.status}`);
     }
 
