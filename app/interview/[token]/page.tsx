@@ -26,6 +26,9 @@ export default async function InterviewPage({ params }: InterviewPageProps) {
     return notFound();
   }
 
+  // Force no caching for this dynamic route (prevents Vercel from caching 404s)
+  // This is handled via the route exports, but we can also set headers if needed
+
   // Get booking from backend API
   let booking;
   try {
