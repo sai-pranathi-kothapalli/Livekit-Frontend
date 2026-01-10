@@ -13,9 +13,23 @@ const nextConfig: NextConfig = {
   },
   // Ensure we're using App Router, not static export
   output: undefined, // Explicitly not setting output: 'export'
-  // Ensure dynamic routes work
-  experimental: {
-    // This ensures dynamic routes are server-rendered
+  // Add headers to prevent caching of dynamic routes
+  async headers() {
+    return [
+      {
+        source: '/interview/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+          },
+          {
+            key: 'X-Vercel-Cache-Control',
+            value: 'no-store',
+          },
+        ],
+      },
+    ];
   },
 };
 

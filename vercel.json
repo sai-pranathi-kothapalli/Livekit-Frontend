@@ -1,21 +1,6 @@
 {
   "buildCommand": "pnpm run build",
   "framework": "nextjs",
-  "installCommand": "pnpm install",
-  "headers": [
-    {
-      "source": "/interview/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
-        },
-        {
-          "key": "X-Vercel-Cache-Control",
-          "value": "no-store"
-        }
-      ]
-    }
-  ]
+  "installCommand": "pnpm install"
 }
 
