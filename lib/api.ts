@@ -85,11 +85,11 @@ export async function scheduleInterview(
  */
 export async function getBooking(token: string): Promise<BookingResponse | null> {
   const url = `${API_BASE_URL}/api/booking/${token}`;
-  
+
   // Add timeout and better error handling
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-  
+
   try {
     const response = await fetch(url, {
       signal: controller.signal,
@@ -105,18 +105,22 @@ export async function getBooking(token: string): Promise<BookingResponse | null>
     }
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({ detail: `Failed to fetch booking: ${response.status} ${response.statusText}` }));
+      const error = await response
+        .json()
+        .catch(() => ({
+          detail: `Failed to fetch booking: ${response.status} ${response.statusText}`,
+        }));
       throw new Error(error.detail || error.error || `Failed to fetch booking: ${response.status}`);
     }
 
     return await response.json();
   } catch (error) {
     clearTimeout(timeoutId);
-    
+
     if (error instanceof Error && error.name === 'AbortError') {
       throw new Error('Request timeout: Backend took too long to respond');
     }
-    
+
     // Re-throw to be handled by caller
     throw error;
   }

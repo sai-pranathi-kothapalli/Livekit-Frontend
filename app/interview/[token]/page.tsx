@@ -30,12 +30,15 @@ export default async function InterviewPage({ params }: InterviewPageProps) {
   let booking;
   try {
     // Log for debugging (will appear in Vercel logs)
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+    const apiUrl =
+      process.env.NEXT_PUBLIC_API_URL ||
+      process.env.NEXT_PUBLIC_BACKEND_URL ||
+      'http://localhost:8000';
     console.log(`[interview] Fetching booking for token: ${token}`);
     console.log(`[interview] API URL: ${apiUrl}`);
-    
+
     booking = await getBooking(token);
-    
+
     if (booking) {
       console.log(`[interview] Booking found: ${booking.email}`);
     } else {
@@ -55,9 +58,7 @@ export default async function InterviewPage({ params }: InterviewPageProps) {
           <p className="text-muted-foreground text-sm">
             There was an error connecting to the server. Please try again later.
           </p>
-          <p className="text-muted-foreground text-xs mt-2">
-            Token: {token}
-          </p>
+          <p className="text-muted-foreground mt-2 text-xs">Token: {token}</p>
         </div>
       </main>
     );
