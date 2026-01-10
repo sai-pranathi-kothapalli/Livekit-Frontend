@@ -5,6 +5,7 @@ import { getBooking } from '@/lib/api';
 import { getAppConfig } from '@/lib/utils';
 
 // Force dynamic rendering for this route - CRITICAL for Vercel
+// These exports ensure Vercel uses serverless functions, not static export
 export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 export const runtime = 'nodejs';
