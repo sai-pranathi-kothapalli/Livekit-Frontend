@@ -42,6 +42,11 @@ export default async function InterviewPage({ params }: InterviewPageProps) {
   // Await params first (required in Next.js 15)
   const { token } = await params;
 
+  // Validate token exists (per AI recommendation)
+  if (!token || typeof token !== 'string') {
+    return notFound();
+  }
+
   console.log('[InterviewPage] Token received:', token);
   console.log('[InterviewPage] Looking for booking in backend...');
 
