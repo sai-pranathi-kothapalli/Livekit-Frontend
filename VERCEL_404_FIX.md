@@ -43,10 +43,12 @@ https://livekit-frontend.vercel.app/interview/test123
 ```
 
 Should show either:
+
 - ✅ The interview page (if token exists in database)
 - ✅ A "not found" page from your code (not a 404 error)
 
 If you still get a 404 after clearing cache, check:
+
 1. Vercel build logs for route recognition
 2. Function logs to see if route is being called
 3. Verify the route path matches exactly: `/interview/[token]`
@@ -72,4 +74,3 @@ If 404 persists after cache clear:
 ## Summary
 
 The code is now correct. The remaining issue is almost certainly **Vercel's build cache** holding onto the old route structure. Clear it and redeploy!
-
